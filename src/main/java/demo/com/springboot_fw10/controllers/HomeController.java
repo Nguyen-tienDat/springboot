@@ -1,10 +1,9 @@
-package controllers;
+package demo.com.springboot_fw10.controllers;
 
-import models.Product;
+import demo.com.springboot_fw10.models.Product;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class HomeController{
         languages.add("python");
         model.addAttribute("languages", languages);
         model.addAttribute("age", 12);
-        return "FE/home";
+        return "fe/home";
 
     }
     @GetMapping("/product-detail")

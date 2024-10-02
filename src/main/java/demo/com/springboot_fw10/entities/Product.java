@@ -5,14 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-@Entity(name = "post")
+@Entity(name  = "product")
 @Data
-public class Post {
+public class Product {
     @Id
     @GeneratedValue
     private Long id;
 
-    private String title;
-    private String content;
-    private int views;
+    private String name;
+    private double price;
+    private String category;
 }

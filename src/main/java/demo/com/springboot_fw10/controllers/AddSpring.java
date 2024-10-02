@@ -1,2 +1,4 @@
-package demo.com.springboot_fw10.controllers;public class AddSpring {
+package demo.com.springboot_fw10.controllers;
+
+public class AddSpring {
 }

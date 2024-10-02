@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller("SessionController")
 @RequestMapping("/session")
-public class PostController {
+public class SessionController {
 }

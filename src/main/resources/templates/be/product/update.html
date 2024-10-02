@@ -15,7 +15,7 @@
     <form method ="post" th:object="${product}">
         <div class="mb-3">
             <label for="textName" class="form-label">Product Name</label>
-            <input type="text" th:field="*{name}" class="form-control" id="textName" placeholder="name@example.com">
+            <input type="text" th:field="*{name}" class="form-control" id="textName" placeholder="Product Name">
         </div>
         <div class="mb-3">
             <label for="textPrice" class="form-label">Product Price</label>
@@ -26,7 +26,7 @@
             <input type="text" class="form-control" th:field="*{category}" id="textCategory"/>
         </div>
         <div>
-            <button type="submit" class="btn btn-info">Submit</button>
+            <button class="btn btn-primary">Submit</button>
 
         </div>
 

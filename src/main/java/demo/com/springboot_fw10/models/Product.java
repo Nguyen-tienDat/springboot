@@ -1,4 +1,4 @@
-package models;
+package demo.com.springboot_fw10.models;
 
 import lombok.Data;
 
@@ -6,6 +6,7 @@ import lombok.Data;
 public class Product {
 public int id;
 public String name;
-public float price;
+public double price;
+public String category;
 
 }
