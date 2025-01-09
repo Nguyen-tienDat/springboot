@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div class="container mx-auto">
+    <nav class="flex items-center justify-between py-4 px-2 shadow bg-gray-800 text-white">
+        <ul class="flex items-center space-x-2">
+            <li><a href="/">Home</a></li>
+            <li><a href="/admin/category/list">Category</a></li>
+            <li><a href="/admin/product/list">Product</a> </li>
+        </ul>
+        <div>
+            <a th:href="@{/cart}">Cart</a>
+
+            <a class="cursor-pointer inline-block p-2 bg-white rounded-md text-gray-800">
+                Login
+            </a>
+        </div>
+    </nav>
+
+    <div class="row" style="min-height: 100vh">
+        <h5 class="text-gray-800 text-xl mt-3 uppercase text-center">New Arrivals</h5>
+        <div class="grid grid-cols-4 gap-4 mt-2">
+
+            <div class="col-span-1" th:each="product:${lastProduct}">
+                <div class="shadow rounded-md ">
+                    <img th:src="@{${product.getThumbnail()}}" alt="image" class="w-100 h-48 object-cover">
+                    <div class="p-2">
+                        <h6 th:text="${product.getName()}"></h6>
+                        <p>Price: $ <span th:text="${product.getPrice()}"></span></p>
+                        <button class="cursor-pointer inline-block p-2 bg-gray-800 rounded-md text-white btn-add-to-cart"
+                                th:attr="data-product-id=${product.getId()}"
+                        >
+                            Add To Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="text-gray-800 text-xl mt-5 uppercase text-center">Best Sellers</h5>
+        <div class="grid grid-cols-4 gap-4 mt-2">
+            <div class="col-span-1" th:each="product:${bestSoldProduct}">
+                <div class="shadow rounded-md ">
+                    <img th:src="@{${product.getThumbnail()}}" alt="image" class="w-100 h-48 object-cover">
+                    <div class="p-2">
+                        <h6 th:text="${product.getName()}"></h6>
+                        <p>Price: $ <span th:text="${product.getPrice()}"></span></p>
+                        <button class="cursor-pointer inline-block p-2 bg-gray-800 rounded-md text-white btn-add-to-cart"
+                                th:attr="data-product-id=${product.getId()}">Add To Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center bg-gray-800 text-white">
+        Copyright@2024
+    </footer>
+</div>
+
+<script>
+    //chon nut add to cart va cho no vao 1 su kien (for each)
+    const CARTS_KEY = "carts";
+    const btnAddToCart = document.querySelectorAll('.btn-add-to-cart');
+    btnAddToCart.forEach(btn => {
+        btn.addEventListener('click', function () {
+            let cartItems = localStorage.getItem(CARTS_KEY) ? JSON.parse(localStorage.getItem(CARTS_KEY)) : [];
+            //lay gio hang ra: neu co cart item => lay ra va parse sang json
+            const productId = btn.getAttribute('data-product-id'); //lay product id tu button
+            fetch('/api/product/' + productId, { //cho phep call api tu local
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                return response.json(); //tra ve json
+            }).then(data => {
+                console.log(data); // lay data de luu vao local storage
+                const cartItem = cartItems.find(cartItem => cartItem.product.id == data.id);
+                //co sp ton tai trong gio hang
+                if (cartItem) {
+                    console.log("co san pham trong gio hang");
+                    cartItem.quantity += 1;
+                    cartItems = [
+                        ...cartItems.filter(item => item.product.id != data.id),
+                        cartItem
+                    ];
+                } else {
+                    // khong co sp trong go hang
+                    cartItems.push({
+                        product: data,
+                        quantity: 1
+                    });
+                }
+
+                //sync nguoc vao localStorage
+                localStorage.setItem(CARTS_KEY, JSON.stringify(cartItems));
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

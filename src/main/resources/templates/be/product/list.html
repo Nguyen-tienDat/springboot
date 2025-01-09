@@ -1,48 +1,60 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Product List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-</head>
-<body>
-<div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Category</th>
-            <th scope="col">Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr scope="row" th:each="product: ${products}">
-            <td>
-                <div th:text="${product.getId()}"></div>
-            </td>
-            <td>
-                <div th:text="${product.getName()}"></div>
-            </td>
-            <td>
-                <div th:text="${product.getPrice()}"></div>
-            </td>
-            <td>
-                <div th:text="${product.getCategory()}"></div>
-            </td>
-            <td>
-                <a th:href="@{'/admin/product/update/' + ${product.getId()}}" class="btn btn-primary">Edit</a>
-                <a th:href="@{'/admin/product/delete/' + ${product.getId()}}" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{be/layout}">
 
-        </tbody>
-    </table>
-</div>
-</body>
+<section layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Product Table</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Number</th>
+                            <th>Thumbnail</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item:${products}">
+                            <td th:text="${item.getId()}"></td>
+                            <td></td>
+                            <td>
+                                <img th:src="@{${item.getThumbnail()}}"
+                                     style="width: 100px; height: 100px">
+                            </td>
+                            <td th:text="${item.getName()}"></td>
+                            <td th:text="${item.getPrice()}"></td>
+                            <td th:text="${item.getDiscount()}"></td>
+                            <td th:text="${item.getDescription()}"></td>
+                            <td>
+                                <a onclick="return confirm('Are You Sure?')"
+                                   th:href="@{'/admin/product/delete/'+${item.getId()}}">Delete</a>
+                                <a th:href="@{'/admin/product/update/'+${item.getId()}}">Edit</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
 </html>
