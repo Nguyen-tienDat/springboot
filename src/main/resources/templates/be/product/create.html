@@ -1,10 +1,143 @@
 <!DOCTYPE html>
-<html lang="en" thymeleaf >
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{be/layout}">
 
-</body>
+<section layout:fragment="content">
+    <!-- Check if there are success or error messages -->
+    <div th:if="${success_message}">
+        <div class="alert alert-success" role="alert">
+            <div th:text="${success_message}"></div>
+        </div>
+    </div>
+    <div th:if="${error_message}">
+        <div class="alert alert-danger" role="alert">
+            <div th:text="${error_message}"></div>
+        </div>
+    </div>
+
+    <!-- Form to submit product details -->
+    <form th:method="POST" th:object="${dto}" enctype="multipart/form-data">
+        <div class="card-body">
+            <!-- Product Name -->
+            <div class="mb-3">
+                <label for="exampleInputName" class="form-label">Name</label>
+                <input type="text" th:field="*{name}" class="form-control" id="exampleInputName"
+                       aria-describedby="emailHelp">
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-3">
+                <span>Images</span>
+                <div class="file-input-image-wrapper">
+                    <!-- Initially empty, will append file inputs here -->
+                </div>
+                <div role="button" class="btn btn-primary btn-add-more-input">Add More Images</div>
+            </div>
+
+            <!-- Price -->
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="text" class="form-control" th:field="*{price}" id="price">
+            </div>
+
+            <!-- Discount -->
+            <div class="mb-3">
+                <label for="discount" class="form-label">Discount</label>
+                <input type="text" class="form-control" th:field="*{discount}" id="discount">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="editor" class="form-label">Description</label>
+                <textarea type="text" class="form-control" th:field="*{description}" id="editor"></textarea>
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-control" id="category" th:field="*{categoryId}">
+                    <option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        const $ = document.querySelector.bind(document);
+        let countFileInput = 0;
+        const MAX_FILE_INPUT = 3;
+
+        // Add more file input fields dynamically
+        $('.btn-add-more-input').addEventListener('click', function () {
+            if (countFileInput >= MAX_FILE_INPUT) {
+                return; // Limit to 3 inputs
+            }
+            countFileInput++;
+
+            // Create a new file input element
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.name = 'images[]';  // Use 'images[]' to submit multiple files as an array
+            input.accept = 'image/*'; // Ensure only images can be uploaded
+
+            // Append the new input field to the image input container
+            $('.file-input-image-wrapper').appendChild(input);
+        });
+    </script>
+
+    <style>
+        .btn-add-more-input {
+            cursor: pointer;
+        }
+    </style>
+
+    <script src="https://cdn.tiny.cloud/1/6ipyt6z14qhfiv6m2i0m2dg99tndn315u6bccmahkhnvnmna/tinymce/7/tinymce.min.js"
+            referrerpolicy="origin"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+            selector: '#editor',
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Dec 5, 2024:
+                'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
+                // Early access to document converters
+                'importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                {value: 'First.Name', title: 'First Name'},
+                {value: 'Email', title: 'Email'},
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+            exportpdf_converter_options: {
+                'format': 'Letter',
+                'margin_top': '1in',
+                'margin_right': '1in',
+                'margin_bottom': '1in',
+                'margin_left': '1in'
+            },
+            exportword_converter_options: {'document': {'size': 'Letter'}},
+            importword_converter_options: {
+                'formatting': {
+                    'styles': 'inline',
+                    'resets': 'inline',
+                    'defaults': 'inline',
+                }
+            },
+        });
+    </script>
+</section>
+
 </html>

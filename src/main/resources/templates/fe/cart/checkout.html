@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div class="container mx-auto">
+    <nav class="flex items-center justify-between py-4 px-2 shadow bg-gray-800 text-white">
+        <ul class="flex items-center space-x-2">
+            <li><a href="/">Home</a></li>
+            <li><a href="/admin/category/list">Category</a></li>
+            <li><a href="/admin/product/list">Product</a> </li>
+        </ul>
+
+        <div>
+            <a th:href="@{/cart}">Cart</a>
+            <a class="cursor-pointer inline-block p-2 bg-white rounded-md text-gray-800">
+                Login
+            </a>
+        </div>
+    </nav>
+
+    <div style="min-height: 100vh;width: 100%">
+        <h5 class="text-gray-800 text-xl mt-3 uppercase text-center ">Checkout Form</h5>
+        <div class="w-1/3 mx-auto">
+        <form class="order-form" >
+            <label>
+                <span> Full Name</span>
+                <input type="text" name="fullName" class="border w-full">
+            </label>
+
+            <label>
+                <span> Phone Number</span>
+                <input type="text" name="phone" class="border w-full">
+            </label>
+
+            <label>
+                <span> Address</span>
+                <input type="text" name="address" class="border w-full">
+            </label>
+
+            <label>
+                <span> Note</span>
+                <textarea name="note" placeholder="Leave your note"  class="border w-full"></textarea>
+            </label>
+
+            <button> Checkout</button>
+
+        </form>
+        </div>
+        <div class="order-success-message">
+            <h3>Checkout Successful. Thanks for your order </h3>
+            <p> Your order is <span class="order-id font-bold"></span></p>
+        </div>
+
+
+        <table class="w-full text-left table-auto border-collapse border border-slate-400 min-w-max text-slate-800">
+            <thead>
+            <tr>
+                <th style="padding: 10px">Product</th>
+                <th style="padding: 10px">Total</th>
+                <th style="padding: 10px">Action</th>
+            </tr>
+            </thead>
+
+            <tbody class="cart-body">
+            </tbody>
+        </table>
+
+    </div>
+
+    <footer class="text-center bg-gray-800 text-white">
+        Copyright@2024
+    </footer>
+</div>
+
+<script>
+    function submitOrder(event){
+        //call api to submit order
+        const CARTS_KEY = "carts";
+        let carts = localStorage.getItem(CARTS_KEY) ? JSON.parse(localStorage.getItem(CARTS_KEY)) : [];
+        if (carts.length == 0){
+            alert("Cart is empty");
+            return false;
+        }
+        const subTotal = carts.reduce((acc, cartItem) => acc + cartItem.product.price * cartItem.quantity);
+        const tax = 0.1 * subTotal;
+        const total =  subTotal + tax;
+
+        const nodeFullName = document.querySelector('order-form input[name="fullName"]');
+        const nodePhone = document.querySelector('order-form input[name="phone"]');
+        const nodeAddress = document.querySelector('order-form input[name="address"]');
+        const nodeNote = document.querySelector('order-form input[name="note"]');
+        const payload = {
+            "orderInfo": {
+                "fullName": nodeFullName.value,
+                "phone": nodePhone.value,
+                "address": nodeAddress.value,
+                "subTotal": subTotal,
+                "tax": tax,
+                "total": total,
+                "shippingFee": 0
+            },
+            "productList": [
+                ...carts.map(cartItem => ({
+                    "productId": cartItem.product.id,
+                    "quantity": cartItem.quantity,
+                    "price": cartItem.product.price
+                }))
+            ]
+        }
+
+        //fetch api to get db
+        fetch('/api/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie('token')
+            },
+            body: JSON.stringify(payload)
+        }).then(response => {
+            if (response.status == 200) {
+                alert("Order successfully");
+                localStorage.removeItem(CARTS_KEY);
+            } else {
+                alert("Order failed");
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

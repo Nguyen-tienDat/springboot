@@ -1,40 +1,60 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">>
-<head>
-    <meta charset="UTF-8">
-    <title>Product List</title>
-</head>
-<body>
-<table>
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Category</th>
-    </tr>
-    </thead>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{be/layout}">
 
-    <tbody>
-    <tr th:each="product: ${products}">
-        <td>
-            <!--/*@thymesVar id="product" type=""*/-->
-            <div th:text="${product.getId()}"></div>
-        </td>
-        <td>
-            <div th:text="${product.getName()}"></div>
-        </td>
-        <td>
-            <div th:text="${product.getPrice()}"></div>
-        </td>
-        <td>
-            <div th:text="${product.getCateoryId()}"></div>
-        </td>
-
-
-    </tr>
-    </tbody>
-</table>
-
-</body>
+<section layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Product Table</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Number</th>
+                            <th>Thumbnail</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item:${products}">
+                            <td th:text="${item.getId()}"></td>
+                            <td></td>
+                            <td>
+                                <img th:src="@{${item.getThumbnail()}}"
+                                     style="width: 100px; height: 100px">
+                            </td>
+                            <td th:text="${item.getName()}"></td>
+                            <td th:text="${item.getPrice()}"></td>
+                            <td th:text="${item.getDiscount()}"></td>
+                            <td th:text="${item.getDescription()}"></td>
+                            <td>
+                                <a onclick="return confirm('Are You Sure?')"
+                                   th:href="@{'/admin/product/delete/'+${item.getId()}}">Delete</a>
+                                <a th:href="@{'/admin/product/update/'+${item.getId()}}">Edit</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
 </html>

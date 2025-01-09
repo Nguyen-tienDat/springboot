@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{be/layout}">
+
+<section layout:fragment="content">
+<div class="row">
+ <div class="col-md-12">
+  <div class="card">
+   <div class="card-header">
+    <h3 class="card-title"User Table</h3>
+   </div>
+   <!-- /.card-header -->
+   <div class="card-body p-0">
+    <table class="table table-sm">
+     <thead>
+     <tr>
+      <th style="width: 10px">#</th>
+      <th>Email</th>
+      <th>FullName</th>
+      <th>Phone</th>
+      <th>Address</th>
+      <th>Role</th>
+
+      <th style="width: 40px">Action</th>
+     </tr>
+     </thead>
+     <tbody>
+     <tr th:each="item:${users}">
+      <td>
+       <div th:text="${item.getId()}"></div>
+      </td>
+      <td>
+       <div th:text="${item.getEmail()}"></div>
+      </td>
+      <td>
+       <div th:text="${item.getFullName()}"></div>
+      </td>
+      <td><div th:text="${item.getPhone()}"></div>
+      </td>
+      <td><div th:text="${item.getAddress()}"></div>
+      </td>
+      <td>
+       <div th:text="${item.getRoleLabel()}"></div>
+      </td>
+      <td>
+       <a onclick="return confirm('Are You Sure?')" th:href="@{'/admin/user/delete/'+${item.getId()}}">Delete</a>
+       <a th:href="@{'/admin/user/update/'+${item.getId()}}">Edit</a>
+      </td>
+     </tr>
+     </tbody>
+    </table>
+   </div>
+   <!-- /.card-body -->
+   <div class="card-footer clearfix">
+    <ul class="pagination pagination-sm m-0 float-right">
+     <li class="page-item"><a class="page-link" href="#">«</a></li>
+     <li class="page-item"><a class="page-link" href="#">1</a></li>
+     <li class="page-item"><a class="page-link" href="#">2</a></li>
+     <li class="page-item"><a class="page-link" href="#">3</a></li>
+     <li class="page-item"><a class="page-link" href="#">»</a></li>
+    </ul>
+   </div>
+  </div>
+ </div>
+</div>
+
+</section>
+</html>
